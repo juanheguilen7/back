@@ -1,0 +1,103 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.body{
+    font-family: 'Roboto Condensed', sans-serif;
+    padding-block: 2rem;
+}
+
+.mainHome{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.titleHome{
+    margin-block: 25px;
+
+}
+
+.productsHome{
+  display: grid;
+  width: 80%;
+  grid-template-columns:  2fr 2fr;
+  gap: 25px;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    width: 250px;
+    height: 250px;
+    padding: 0.5rem;
+    margin: 0 auto;
+    border: 2px solid black;
+    border-radius: 1rem;
+    box-shadow: 0 0 3rem -1rem;
+    text-transform: uppercase;
+}
+.card p{
+    font-size: 1.1rem;
+
+}
+
+.card-title{
+    font-size: 1.2rem;
+    text-align: center;
+    padding-block: 0.5rem;
+}
+
+.timeMain{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+#container h2{
+    text-align: center;
+}
+.prodTime{
+    width: 50%;
+    margin: 0 auto;
+    margin-block:1rem;
+    border: 2px solid black;
+    border-radius: .7rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.partTimerRight{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.updateProd{
+    display: flex;
+    flex-direction: column;
+    max-width:70%;
+    gap: 10px;
+}
+.addProd{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width:70%;
+    gap: 10px;
+    
+}
+
+.deletProd{
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    gap: 5px;
+}
+
+.section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 5%;
+}
