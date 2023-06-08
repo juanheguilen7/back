@@ -13,25 +13,14 @@ class ProductService {
         price ? matchQuery.price = price : undefined;
 
         //estructuro la busqueda 
-        const searchProd = await this.model.aggregate([
-            {
-                //al ser true, alguno de los datos o ambos, filtro por cateogoria o price, sino envio todo los prod
-                $match: matchQuery
-            },
-            {
-                //acomoda por precio, asc-desc
-                $sort: { price: 1 }
-            },
-            //filtro para page
-            {
-                $skip: page
-            },
-            {
-                //limito la cantidad
-                $limit: n
-            }
-        ])
-
+        const options = {
+            page: page,
+            limit: n,
+            sort: { price: 1 }
+        }
+        //paginate recibe primer arg, filtro segundo opciones, recibo toda la informacion y como podemos continuarla
+        const searchProd = await this.model.paginate(matchQuery, options)
+    
         return searchProd;
     }
     //agrego prod

@@ -2,8 +2,16 @@ import mongoose from "mongoose";
 
 
 const cartsSchema = new mongoose.Schema({
-    idProd: String,
-    quantity: Number
+    //ACOMODO EL SCHEMA PARA QUE FUNCIONE CON POPULATION
+    products: [
+        {
+            idProd: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'products'
+            },
+            quantity: Number
+        }
+    ]
 });
 
 
