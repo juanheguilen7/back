@@ -11,7 +11,7 @@ class ProductService {
         //analizo si son true, los adquiero a el obj, sino es indefinido
         findCategory ? matchQuery.category = findCategory : undefined;
         price ? matchQuery.price = price : undefined;
-
+        matchQuery.status = true;
         //estructuro la busqueda 
         const options = {
             page: page,

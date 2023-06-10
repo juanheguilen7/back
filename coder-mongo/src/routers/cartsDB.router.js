@@ -7,7 +7,7 @@ const cartRouterAtlas = Router();
 cartRouterAtlas.post('/', async (req, res) => {
    try {
       const newCart = await cartService.createCart();
-      res.status(204).send('Carrito creado')
+      res.status(200).send(newCart)
 
    } catch (err) {
 
@@ -20,7 +20,7 @@ cartRouterAtlas.post('/', async (req, res) => {
 cartRouterAtlas.get('/', async (req, res) => {
    try {
       const carts = await cartService.getAllCarts();
-      res.status(204).send(carts);
+      res.status(200).send(carts);
 
    }
    catch (err) {
@@ -35,21 +35,23 @@ cartRouterAtlas.get('/:cid', async (req, res) => {
       const id = req.params.cid;
 
       const findCart = await cartService.cartById(id);
-      res.status(200).send(findCart);
+
+      //para poder acceder a los productos
+      let send = JSON.parse(JSON.stringify(findCart.products));
+      res.status(200).render('carts', { products: send });
 
    }
    catch (err) {
       res.status(501).send({ err });
 
    }
-
 })
 
 //AGREGO PROD AL CARRITO
-cartRouterAtlas.post('/:idCart/product/:idProd/:quantity', async (req, res) => {
+cartRouterAtlas.post('/:cid/product/:pid/:quantity', async (req, res) => {
    try {
-      const idCart = req.params.idCart;
-      const idProd = req.params.idProd;
+      const idCart = req.params.cid;
+      const idProd = req.params.pid;
       const quantity = req.params.quantity;
       const addProduct = await cartService.addProdCart(idCart, idProd, quantity);
       res.status(200).send(addProduct);
@@ -59,7 +61,7 @@ cartRouterAtlas.post('/:idCart/product/:idProd/:quantity', async (req, res) => {
    }
 })
 //MODIFICO CANTIDAD DE PROD
-cartRouterAtlas.put('/:cid/product/:pid', async (req, res) => {
+cartRouterAtlas.put('/:cid/products/:pid', async (req, res) => {
    try {
       let idCart = req.params.cid;
       let idProd = req.params.pid;
@@ -82,7 +84,7 @@ cartRouterAtlas.delete('/:cid/products/:pid', async (req, res) => {
 
       let traigo = await cartService.deletProd(id, prodId);
 
-      res.status(204).send(traigo);
+      res.status(200).send(traigo);
 
    } catch (err) {
 
@@ -98,7 +100,7 @@ cartRouterAtlas.delete('/:id', async (req, res) => {
    try {
       const id = req.params.id
       const delet = await cartService.deletCarrito(id);
-      res.status(204).send("chau carrito");
+      res.status(200).send("chau carrito");
 
    } catch (err) {
       res.status(501).send({ err });

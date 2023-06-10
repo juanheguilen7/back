@@ -3,6 +3,10 @@ import productService from "../dao/service/products.service.js";
 
 const productsRouterAtlas = Router();
 
+//renderizo la pagina 
+
+
+
 //LLAMO PRODUCTOS
 productsRouterAtlas.get('/', async (req, res) => {
     try {
@@ -11,19 +15,22 @@ productsRouterAtlas.get('/', async (req, res) => {
         let limit = parseInt(req.query.limit);
         let page = parseInt(req.query.page);
         //estos dos por body
-        let category = req.body.category;
+        //test va a recibir la categoria
+        let test = req.query.test;
+       
         let price = parseInt(req.body.price);
-
+        
 
         !limit ? limit = 10 : limit;
         !page ? page = 1 : page;
-        !category ? category = false : category;
+        !test ? test = false : test;
         !price ? price = false : price;
 
-        console.log(limit, page, category, price)
-        let busqueda = await productService.getSomeProducts(limit, page, category, price)
+        let busqueda = await productService.getSomeProducts(limit, page, test, price);
 
-        res.status(200).send(busqueda);
+        //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
+        let renderFind = JSON.parse(JSON.stringify(busqueda.docs));
+        res.status(200).render('products', {find: renderFind});    
 
     } catch (err) {
         res.status(400).send({ err })
@@ -36,7 +43,7 @@ productsRouterAtlas.post('/', async (req, res) => {
     try {
         const product = req.body;
         const downloadProduct = await productService.addProduct(product);
-        res.send(`producto cargador ${downloadProduct}`)
+        res.status(200).send(`producto cargador ${downloadProduct}`)
     }
     catch (err) {
         res.status(500).send(err)
@@ -49,7 +56,7 @@ productsRouterAtlas.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const delet = await productService.deletProd(id);
-        res.send("eliminado")
+        res.status(204).send("eliminado")
 
     } catch (err) {
 
