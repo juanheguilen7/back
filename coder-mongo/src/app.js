@@ -25,9 +25,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 //uso de rutas
-app.use('/api/productsDB', productsRouterAtlas);
-app.use('/api/cartsDB', cartRouterAtlas);
-app.use('/api/chatDB', messagesRouteAtlas);
+app.use('/api/products', productsRouterAtlas);
+app.use('/api/carts', cartRouterAtlas);
+app.use('/api/chat', messagesRouteAtlas);
 
 
 //conectando a Atlas
