@@ -60,6 +60,7 @@ cartRouterAtlas.post('/:cid/product/:pid/:quantity', async (req, res) => {
       res.status(400).send({ err })
    }
 })
+
 //MODIFICO CANTIDAD DE PROD
 cartRouterAtlas.put('/:cid/products/:pid', async (req, res) => {
    try {
@@ -75,6 +76,19 @@ cartRouterAtlas.put('/:cid/products/:pid', async (req, res) => {
    }
 
 });
+cartRouterAtlas.put('/:cid', async (req, res) => {
+   try {
+      let idCart = req.params.cid;
+      //products es una array de obj {id, quantity}
+      let products = req.body;
+      await cartService.updateProd(idCart, products)
+      res.status(200).send('Productos agregados')
+
+   } catch (err) {
+      res.status(400).send({ err })
+
+   }
+})
 
 //ELIMINO PORD DEL CARRITO
 cartRouterAtlas.delete('/:cid/products/:pid', async (req, res) => {
@@ -94,13 +108,12 @@ cartRouterAtlas.delete('/:cid/products/:pid', async (req, res) => {
 
 });
 
-//ELIMINO CARRITO
+//ELIMINO PRODUCTOS DEL CARRITO
 cartRouterAtlas.delete('/:id', async (req, res) => {
-
    try {
       const id = req.params.id
-      const delet = await cartService.deletCarrito(id);
-      res.status(200).send("chau carrito");
+      const delet = await cartService.vaciarCarrito(id);
+      res.status(200).send(delet);
 
    } catch (err) {
       res.status(501).send({ err });

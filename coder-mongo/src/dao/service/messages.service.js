@@ -20,7 +20,7 @@ class MessagesService {
         //busco por email
         let chat =  await this.model.findOne({ email: dato.email });
         //si el array del msj es diferente a vacio
-        if(chat.message.length != 0 ){
+        if(chat.length != 0 ){
             let before = chat.message
             //pusheo en el array los mensajes
             let after = [...before, ...msj];

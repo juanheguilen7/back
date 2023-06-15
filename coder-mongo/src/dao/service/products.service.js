@@ -20,7 +20,6 @@ class ProductService {
         }
         //paginate recibe primer arg, filtro segundo opciones, recibo toda la informacion y como podemos continuarla
         const searchProd = await this.model.paginate(matchQuery, options)
-    
         return searchProd;
     }
     //agrego prod

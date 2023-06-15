@@ -17,20 +17,36 @@ productsRouterAtlas.get('/', async (req, res) => {
         //estos dos por body
         //test va a recibir la categoria
         let test = req.query.test;
-       
+
         let price = parseInt(req.body.price);
-        
+
 
         !limit ? limit = 10 : limit;
         !page ? page = 1 : page;
         !test ? test = false : test;
         !price ? price = false : price;
 
-        let busqueda = await productService.getSomeProducts(limit, page, test, price);
+        let products = await productService.getSomeProducts(limit, page, test, price);
 
+        const response = {
+            status: "success",
+            payload: products.docs,
+            totalPages: products.totalPages,
+            prevPage: products.hasPrevPage ? products.prevPage : null,
+            nextPage: products.hasNextPage ? products.nextPage : null,
+            page: products.page,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: products.hasPrevPage ? `/api/products?page=${products.prevPage}` : null,
+            nextLink: products.hasNextPage ? `/api/products?page=${products.nextPage}` : null,
+            firstLink: `/api/products?page=1`,
+            lastLink: `/api/products?page=${products.totalPages}`,
+        };
+        console.log(response)
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
-        let renderFind = JSON.parse(JSON.stringify(busqueda.docs));
-        res.status(200).render('products', {find: renderFind});    
+        let renderFind = JSON.parse(JSON.stringify(response.payload));
+        res.status(200).render('products', { title: 'Products', find: renderFind });
+       
 
     } catch (err) {
         res.status(400).send({ err })

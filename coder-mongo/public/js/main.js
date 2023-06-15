@@ -6,7 +6,7 @@ let id = '';
 btn.forEach(boton => boton.addEventListener('click', (e) => {
     // Recopilo el id del producto
     id = `${e.target.value}`;
-    
+
     if (!idCart) {
         // Si el ID del carrito no está definido, crear un nuevo carrito
         createCart()

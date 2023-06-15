@@ -40,6 +40,16 @@ class CartService {
         return await this.model.deleteOne({ _id: idCart });
     };
 
+    //vaciar carrito
+    async vaciarCarrito(idCart) {
+        const cart = await this.cartById(idCart);
+
+        cart.products = [];
+        cart.save();
+
+        return cart;
+    };
+
     //ELIMINO PRODUCTO DEL CARRITO POR ID
     async deletProd(idCart, prodId) {
         // Obtener el carrito por ID
@@ -51,7 +61,7 @@ class CartService {
             // Eliminar el producto del array de productos
             cart.products.splice(index, 1);
             // Actualizar el carrito en la base de datos
-            await cart.save();
+            cart.save();
         }
         // Devolver el carrito actualizado
         return cart;
@@ -68,10 +78,21 @@ class CartService {
         cart.products[index].quantity != quantity ? cart.products[index].quantity = quantity : cart.products[index].quantity;
 
         //lo actualizo
-        await cart.save();
+        cart.save();
 
         //devuelvo actualizado
         return cart;
+    }
+
+    async updateProducts(idCart, arrProd) {
+        let cart = await this.cartById(idCart);
+        let arrayIncial = cart.products;
+        const newCart = [...arrayIncial, ...arrProd];
+
+        cart.products = newCart
+        cart.save()
+
+        return cart
     }
 
 }
