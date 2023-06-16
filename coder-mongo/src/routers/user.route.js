@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 import userService from "../dao/service/user.service.js";
 
 const userRoute = Router();
@@ -42,4 +42,4 @@ userRoute.post('/logout', (req, res) => {
     req.status(200).json({ message: 'Logged Out' });
 })
 
-export { userRoute }
+export { userRoute } */

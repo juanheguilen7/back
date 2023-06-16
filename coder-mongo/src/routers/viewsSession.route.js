@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 import { isAuth, isGuest } from "../middleware/auth.middleware.js";
 
 const viewsRoute = Router();
@@ -24,4 +24,4 @@ viewsRoute.get('/login', isGuest, (req, res) => {
     })
 })
 
-export { viewsRoute }
+export { viewsRoute } */

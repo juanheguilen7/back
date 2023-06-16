@@ -21,17 +21,16 @@ class CartService {
 
     //BUSCAR CARRITO POR ID
     async cartById(idCart) {
+        //busco el cart con findOne y uso populate para mostrar todo el prodct por su id
         return await this.model.findOne({ _id: idCart }).populate('products.idProd')
     };
 
     //AGREGAR PRODUCTO
     async addProdCart(idCart, idProd, cantidad) {
-        //busco producto por id
-        let doc = await this.model.findById(idCart);
+        let doc = await this.model.findById(idCart);//busco producto por id
         //pusheo, el id del prod, y la cantidad
         doc.products.push({ idProd: idProd, quantity: cantidad });
-        //guardo
-        doc.save();
+        doc.save(); //guardo
         return doc;
     };
 
@@ -42,63 +41,67 @@ class CartService {
 
     //vaciar carrito
     async vaciarCarrito(idCart) {
-        const cart = await this.cartById(idCart);
-
-        cart.products = [];
-        cart.save();
-
-        return cart;
+        const cart = await this.cartById(idCart);//busco el carrito por su id
+        cart.products = [];//vacio el carrito;
+        await cart.save();//guardo el cambio
+        return cart;//retorno el carrito
     };
 
     //ELIMINO PRODUCTO DEL CARRITO POR ID
     async deletProd(idCart, prodId) {
-        // Obtener el carrito por ID
-        const cart = await this.cartById(idCart);
-        // Buscar el producto en el array de productos del carrito
-        const index = cart.products.findIndex(producto => producto.idProd.toString() === prodId);
-        // Verificar si se encontró el producto
+        const cart = await this.cartById(idCart); // Obtener el carrito por ID
+        const products = cart.products;//entro a productos
+
+        let index = products.findIndex(prod => prod.idProd._id.toString() === prodId);//busco la condicion que tenga el mismo id
+        console.log(index);
         if (index !== -1) {
-            // Eliminar el producto del array de productos
-            cart.products.splice(index, 1);
-            // Actualizar el carrito en la base de datos
-            cart.save();
+            //si es correcto hago un splice modificando el array
+            products.splice(index, 1);
+            //
+            cart.products = products;
+            await cart.save();
         }
-        // Devolver el carrito actualizado
-        return cart;
+        return cart; // Devolver el carrito actualizado
     };
 
-    //MODIFICAR PRODUCTO FALTA
+    //MODIFICAR PRODUCTO 
     async updateProd(idCart, idProd, quantity) {
         //busco carrito
         let cart = await this.cartById(idCart);
-        //busco si existe el producto y lo ubico
-        const index = cart.products.findIndex(producto => producto.idProd.toString() === idProd);
-
-        //analizo que la cantidad que quiero modificar sea distinta a la que esta
-        cart.products[index].quantity != quantity ? cart.products[index].quantity = quantity : cart.products[index].quantity;
-
-        //lo actualizo
-        cart.save();
-
-        //devuelvo actualizado
-        return cart;
+        let products = cart.products //entro a productos
+        //recorro productos
+        products.forEach((prod) => {
+            const id = prod.idProd._id;//agarro de cada obj entro a idprod y a su _id
+            const cantidad = prod.quantity;//agarro cantidad de cada prod
+            //analizo si el id es igual al q le paso y si la cantidad es diferente de la q quiero
+            if (id.toString() === idProd && cantidad != quantity) {
+                prod.quantity = quantity; //modifico
+            };
+        })
+        await cart.save(); //guardo 
+        return cart;//devuelvo carrito actualizado
     }
 
+    //CARGAR ARR DE PRODUCTS
     async updateProducts(idCart, arrProd) {
-        let cart = await this.cartById(idCart);
-        let arrayIncial = cart.products;
-        const newCart = [...arrayIncial, ...arrProd];
+        let cart = await this.cartById(idCart);//llamo al carrito
+        let products = cart.products;
 
-        cart.products = newCart
-        cart.save()
+        arrProd.forEach((newProd) => {
+            const index = products.findIndex(
+                (prod) => prod.idProd._id.toString() === newProd.idProd
+            );
 
+            if (index !== -1) {
+                products[index].quantity += newProd.quantity;
+            } else {
+                products.push(newProd);
+            }
+        });
+        await cart.save();
         return cart
     }
-
 }
-
-
 
 const cartService = new CartService();
 export default cartService;
-

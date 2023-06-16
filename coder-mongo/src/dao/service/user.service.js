@@ -1,4 +1,4 @@
-import { UserModel } from "../models/user.model.js";
+/* import { UserModel } from "../models/user.model.js";
 
 class UserService {
     constructor() {
@@ -19,4 +19,4 @@ class UserService {
 }
 const userService = new UserService();
 
-export default userService;
+export default userService; */

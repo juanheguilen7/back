@@ -13,9 +13,9 @@ import cookieParser from 'cookie-parser';
 import { productsRouterAtlas } from './routers/productsDB.router.js';
 import { cartRouterAtlas } from './routers/cartsDB.router.js';
 import { messagesRouteAtlas } from './routers/messagesDB.router.js';
-import { userRoute } from './routers/user.route.js';
+/* import { userRoute } from './routers/user.route.js';
 import { viewsRoute } from './routers/viewsSession.route.js';
-
+ */
 //parseo a json
 app.use(express.json())
 //permite recibir datos complejos desde las url
@@ -35,7 +35,7 @@ app.set('view engine', 'handlebars');
 //uso de cookies
 app.use(cookieParser('B2zdY3B$pHmxW%'));
 // Session
-app.use(
+/* app.use(
     session({
         store: MongoStore.create({
             mongoUrl:
@@ -49,7 +49,7 @@ app.use(
         resave: true,
         saveUninitialized: true,
     })
-);
+); */
 //conectando a Atlas
 const environment = async () => {
 
@@ -61,8 +61,8 @@ environment();
 app.use('/api/products', productsRouterAtlas);
 app.use('/api/carts', cartRouterAtlas);
 app.use('/api/chat', messagesRouteAtlas);
-app.use('/api/users', userRoute);
+/* app.use('/api/users', userRoute);
 app.use('/', viewsRoute)
-
+ */
 //habilito la escucha del server
 const webServer = server.listen('8080', () => { console.log('Levantando server') });
