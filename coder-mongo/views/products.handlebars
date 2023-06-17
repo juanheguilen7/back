@@ -1,19 +1,40 @@
-{{#each find}}
-<div class="card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
+<div class="mb-2 text-center">
+    <h3 class="fs-4 text">Filtrar Productos</h3>
+    <ul class="nav justify-content-center">
 
-    <div class="card-body">
-        <h5 class="card-title text-center">{{title}}</h5>
-
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Descripcion:{{description}}</li>
-            <li class="list-group-item">Precio: ${{price}}</li>
-            <li class="list-group-item">Stock: {{stock}}</li>
-            <li class="list-group-item">Category: {{category}}</li>
-        </ul>
-        <button href="#" class="btn btn-primary btnAddCart" value={{_id}}> Add to cart</button>
-    </div>
-
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled">Disabled</a>
+        </li>
+    </ul>
 </div>
-{{/each}}
+<main class="container d-flex flex-wrap justify-content-center gap-3 flex-row">
+
+    {{#each find}}
+    <div class="card text-center" style="width: 18rem">
+        <img src="/api/products/image/{{_id}}" class="w-100" alt={{title}}>
+
+        <div class="card-body">
+            <h5 class="card-title text-center">{{title}}</h5>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><em>Descripcion:</em>{{description}}</li>
+                <li class="list-group-item">Precio: ${{price}}</li>
+                <li class="list-group-item">Stock: {{stock}}</li>
+                <li class="list-group-item">Category: {{category}}</li>
+            </ul>
+            <button href="#" class="btn btn-primary btnAddCart" value={{_id}}> Add to cart</button>
+        </div>
+    </div>
+    {{/each}}
+
+</main>
 <script src="/js/main.js"></script>

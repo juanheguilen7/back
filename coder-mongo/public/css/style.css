@@ -2,12 +2,3 @@
     margin: 0;
     padding: 0;
 }
-
-body {
-    margin: 25px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 25px;
-
-}

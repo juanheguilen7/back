@@ -1,12 +1,9 @@
 import { Router } from "express";
 import productService from "../dao/service/products.service.js";
+import multer from "multer";
 
 const productsRouterAtlas = Router();
-
-//renderizo la pagina 
-
-
-
+const upload = multer();
 //LLAMO PRODUCTOS
 productsRouterAtlas.get('/', async (req, res) => {
     try {
@@ -46,7 +43,7 @@ productsRouterAtlas.get('/', async (req, res) => {
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
         let renderFind = JSON.parse(JSON.stringify(response.payload));
         res.status(200).render('products', { title: 'Products', find: renderFind });
-       
+
 
     } catch (err) {
         res.status(400).send({ err })
@@ -73,13 +70,10 @@ productsRouterAtlas.delete('/:id', async (req, res) => {
         const id = req.params.id;
         const delet = await productService.deletProd(id);
         res.status(204).send("eliminado")
-
     } catch (err) {
 
         res.status(401).send({ err })
-
     }
-
 })
 
 //modifico por id
@@ -91,7 +85,54 @@ productsRouterAtlas.put('/', async (req, res) => {
     } catch (err) {
         res.status(501).send({ err })
     }
-
 })
+
+//renderizo la vista para cargar el producto
+productsRouterAtlas.get('/upload', (req, res) => {
+    res.render('uploadProduct');
+});
+
+//metodo que crea un producto
+productsRouterAtlas.post('/upload', upload.single('file'), async (req, res) => {
+    try {
+        //recibo un objeto, con product, y img, product es un JSON, y img es un obj{}
+        const productJSON = req.body;
+        //parseo product, para hacerlo obj
+        const product = JSON.parse(productJSON.product);
+        //file es un objeto, con los campos,fieldname, originalname,encoding,mimetype,buffer y size
+
+        //armo el nuevo obj que tengo que mandar a service para que guarde en mongo
+        const newProd = {
+            ...product,
+            img: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            }
+        }
+        await productService.addProduct(newProd);
+        res.status(200).send('se cargo el producto')
+
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+})
+
+//METODO QUE TRAE LA IMAGEN DEL PRODUCTO EN UNA URI, QUE DESPUES USO PARA EL DOM
+productsRouterAtlas.get('/image/:productId', async (req, res) => {
+    try {
+        const product = await productService.getProductByID(req.params.productId);
+        //recibo el producto, y verifico que teng imagen
+        if (!product || !product.img.data) {
+            return res.status(404).send('Imagen no encontrada');
+        }
+        //utilizo eses set para establecer que tipo de respuesta recibe y indica como el navegador tiene que interpretarlo.
+        res.set('Content-Type', product.img.contentType);
+        res.send(product.img.data);
+
+    } catch (error) {
+        console.log('Error al obtener la imagen:', error);
+        res.status(500).send('Ocurrió un error al obtener la imagen');
+    }
+});
 
 export { productsRouterAtlas };

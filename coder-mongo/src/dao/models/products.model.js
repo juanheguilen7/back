@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema({
     },
     stock: Number,
     category: String,
+    img: {
+        data:Buffer, //campo para almacenar datos binarios
+        contentType:String //almaceno el timpo de contenido de la img
+    },
     status: Boolean
 });
 

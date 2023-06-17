@@ -1,0 +1,46 @@
+<form enctype="multipart/form-data" method="post" class="border border-black text-center rounded mx-auto p-3" id="updateForm">
+    <div class="mb-3 px-0 form-check">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" aria-describedby="titleText">
+        <div id="titleHelp" class="form-text">Write the name of the product.</div>
+    </div>
+    <div class="mb-3 px-0 form-check">
+        <label for="description" class="form-label"><em>Description</em></label>
+        <input type="text" class="form-control" id="description">
+        <div class="form-text">Write a short description of the product.</div>
+    </div>
+    <div class="mb-3 px-0 form-check">
+        <label for="price" class="form-label"><em>Price</em></label>
+        <input type="number" class="form-control" id="price">
+        <div class="form-text">Determine the price of the product.</div>
+    </div>
+    <div class="mb-3 px-0 form-check">
+        <label for="code" class="form-label"><em>CODE</em></label>
+        <input type="text" class="form-control" id="code">
+        <div class="form-text">Write the code of the product.</div>
+    </div>
+    <div class="mb-3 px-0 form-check">
+        <label for="stock" class="form-label"><em>Stock</em></label>
+        <input type="number" class="form-control" id="stock">
+        <div class="form-text">Stock of the product.</div>
+    </div>
+    <div class="mb-3 px-0 form-check">
+        <label for="category" class="form-label"><em>Category</em></label>
+        <select class="form-select" aria-label="Default select example" id="category">
+            <option>Open this select menu</option>
+            <option value="guantes">Guantes</option>
+            <option value="pantalones">Pantalones</option>
+            <option value="remeras">Remeras</option>
+            <option value="bucales">Bucales</option>
+            <option value="vendas">Vendas</option>
+            <option value="casco">Casco</option>
+        </select>
+        <div class="form-text">Select the category of the product.</div>
+    </div>
+    <div class="mb-3">
+        <label for="file" class="form-label">Upload product image</label>
+        <input class="form-control" type="file" id="file" name="file">
+    </div>
+    <button type="submit" class="btn btn-primary" id="btnData">Submit</button>
+</form>
+<script src="/js/sendProd.js"></script>
