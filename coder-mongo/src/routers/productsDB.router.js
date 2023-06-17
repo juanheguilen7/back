@@ -15,13 +15,16 @@ productsRouterAtlas.get('/', async (req, res) => {
         //test va a recibir la categoria
         let test = req.query.test;
 
-        let price = parseInt(req.body.price);
+        let price = parseInt(req.query.price);
+        console.log(price)
 
 
         !limit ? limit = 10 : limit;
         !page ? page = 1 : page;
         !test ? test = false : test;
         !price ? price = false : price;
+        
+        console.log(price,limit,test,page)
 
         let products = await productService.getSomeProducts(limit, page, test, price);
 
@@ -39,8 +42,8 @@ productsRouterAtlas.get('/', async (req, res) => {
             firstLink: `/api/products?page=1`,
             lastLink: `/api/products?page=${products.totalPages}`,
         };
-        console.log(response)
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
+        console.log(response)
         let renderFind = JSON.parse(JSON.stringify(response.payload));
         res.status(200).render('products', { title: 'Products', find: renderFind });
 
@@ -88,12 +91,12 @@ productsRouterAtlas.put('/', async (req, res) => {
 })
 
 //renderizo la vista para cargar el producto
-productsRouterAtlas.get('/upload', (req, res) => {
-    res.render('uploadProduct');
+productsRouterAtlas.get('/update', (req, res) => {
+    res.render('updateProduct');
 });
 
 //metodo que crea un producto
-productsRouterAtlas.post('/upload', upload.single('file'), async (req, res) => {
+productsRouterAtlas.post('/update', upload.single('file'), async (req, res) => {
     try {
         //recibo un objeto, con product, y img, product es un JSON, y img es un obj{}
         const productJSON = req.body;

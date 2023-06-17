@@ -39,7 +39,7 @@ btn.addEventListener('click', (e) => {
 const recolectData = async (formData) => {
     //esta clase permite construir y enviar datos de formulario
     try {
-        const response = await fetch('http://localhost:8080/api/products/upload', {
+        const response = await fetch('http://localhost:8080/api/products/update', {
             method: 'POST',
             body: formData //se envia el form data que contiene datos producto y file
         });

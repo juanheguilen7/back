@@ -10,7 +10,7 @@ class ProductService {
         let matchQuery = {}
         //analizo si son true, los adquiero a el obj, sino es indefinido
         findCategory ? matchQuery.category = findCategory : undefined;
-        price ? matchQuery.price = price : undefined;
+        price ? matchQuery.price = {$gt:price} : undefined;
         matchQuery.status = true;
         //estructuro la busqueda 
         const options = {
@@ -19,6 +19,7 @@ class ProductService {
             sort: { price: 1 }
         }
         //paginate recibe primer arg, filtro segundo opciones, recibo toda la informacion y como podemos continuarla
+        console.log(matchQuery);
         const searchProd = await this.model.paginate(matchQuery, options)
         return searchProd;
     }
