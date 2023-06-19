@@ -1,23 +1,27 @@
-<form action='/api/users/' method='post'>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">First Name</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jorge">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Last Name</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Perez">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Age</label>
-        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Tu edad">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="password">
-    </div>
-    <button class="btn btn-outline-success" type="submit">Button</button>
-</form>
+<main class="d-flex justify-content-center">
+   
+    <form action='/api/register' method='post' class="border rounded p-3 text-center">
+     <h2>Crear un usuario</h2>
+        <div class="mb-3">
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first_name" placeholder="Jorge" name="first_name" autocomplete="give-name">
+        </div>
+        <div class="mb-3">
+            <label for="last_name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last_name" placeholder="Perez" name="last_name" autocomplete="family-name">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">Age</label>
+            <input type="number" class="form-control" id="age" placeholder="Tu edad" name="age">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="password" name="password" >
+        </div>
+        <button class="btn btn-outline-success" type="submit">Button</button>
+    </form>
+</main>

@@ -1,3 +1,14 @@
+<nav class="navbar bg-body-tertiary">
+    <div class="container justify-content-evenly">
+        <h5>Bienvenido {{usuario.first_name}} {{usuario.last_name}}</h5>
+        <p> Rol: {{usuario.rol}}</p>
+        <a id="goToCart" href="#" class="d-none btn btn-secondary">Ir al carrito</a>
+        <a type="button" class="btn btn-danger" href="/api/login/logout">Cerrar Sesión</a>
+        <a href="/api/products/update" class="btn btn-light">Cargar Productos</a>
+
+    </div>
+</nav>
+
 <div class="mb-2 text-center">
     <h3 class="fs-4 text">Filtrar Productos</h3>
     <ul class="nav justify-content-center">
@@ -6,18 +17,18 @@
                 aria-expanded="false">Category</a>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/api/products/?test=guantes" value="guantes">Guantes</a></li>
-                <li><a class="dropdown-item" href="/api/products/?test=pantalones" value="pantalones">Pantalones</a></li>
+                <li><a class="dropdown-item" href="/api/products/?test=pantalones" value="pantalones">Pantalones</a>
+                </li>
                 <li><a class="dropdown-item" href="/api/products/?test=remeras">Remeras</a></li>
                 <li><a class="dropdown-item" href="/api/products/?test=bucales">Bucales</a></li>
                 <li><a class="dropdown-item" href="/api/products/?test=vendas">Vendas</a></li>
                 <li><a class="dropdown-item" href="/api/products/?test=casco">Cascos</a></li>
-                 <li><a class="dropdown-item" href="/api/products/">Todos</a></li>
+                <li><a class="dropdown-item" href="/api/products/">Todos</a></li>
 
             </ul>
         </li>
         <li class="nav-item text-center">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
-                aria-expanded="false">Price</a>
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Price</a>
             <ul class="dropdown-menu mr-3">
                 <li>
                     <div class="form-check justify-content-center d-flex gap-2">
@@ -45,9 +56,9 @@
                 </li>
             </ul>
         </li>
-        <a id="goToCart" href="#" class="d-none btn btn-info">Ir al carrito</a>
+
     </ul>
-    
+
 </div>
 <main class="container d-flex flex-wrap justify-content-center gap-3 flex-row">
 

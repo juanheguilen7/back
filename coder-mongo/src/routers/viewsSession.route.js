@@ -1,27 +1,30 @@
-/* import { Router } from "express";
+import { Router } from "express";
 import { isAuth, isGuest } from "../middleware/auth.middleware.js";
 
-const viewsRoute = Router();
 
-viewsRoute.get('/', isAuth, (req, res) => {
-    const { user } = req.session;
-    delete user.password;
-    res.render('inde', {
-        title: 'Perfil de Usuario',
-        
-    })
+const views = Router();
 
-})
-viewsRoute.get('/register', isGuest, (req, res) => {
-    res.render('register', {
-        title: 'Registro de Usuario',
-
-    })
-})
-viewsRoute.get('/login', isGuest, (req, res) => {
+views.get('/', isGuest, (req, res) => {
     res.render('login', {
-        title: 'Inicio de Session'
+        title: 'Ingresar Session'
     })
 })
 
-export { viewsRoute } */
+views.get('/api/profile', isAuth, (req, res) => {
+    //recibo el usuario conectado
+    const { user } = req.session.user;
+    //le elimino la password y paso dato para renderizar
+    delete user.password
+    res.render('index', {
+        title: 'Perfil',
+        user,
+    })
+})
+
+views.get('/api/register', isGuest, (req, res) => {
+    res.render('register', {
+        title: 'Registrarse'
+    })
+})
+
+export { views };

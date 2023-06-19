@@ -1,11 +1,12 @@
 import { Router } from "express";
 import productService from "../dao/service/products.service.js";
 import multer from "multer";
+import { isAdmin,isAuth } from "../middleware/auth.middleware.js";
 
 const productsRouterAtlas = Router();
 const upload = multer();
 //LLAMO PRODUCTOS
-productsRouterAtlas.get('/', async (req, res) => {
+productsRouterAtlas.get('/',isAuth, async (req, res) => {
     try {
         //parametros que puedo recibir en el get
         //estos dos por url
@@ -23,8 +24,8 @@ productsRouterAtlas.get('/', async (req, res) => {
         !page ? page = 1 : page;
         !test ? test = false : test;
         !price ? price = false : price;
-        
-        console.log(price,limit,test,page)
+
+        console.log(price, limit, test, page)
 
         let products = await productService.getSomeProducts(limit, page, test, price);
 
@@ -44,8 +45,20 @@ productsRouterAtlas.get('/', async (req, res) => {
         };
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
         console.log(response)
+        const user = req.session.user;
+        let usuario
+
+        if (user.email != 'adminCoder@coder.com') {
+            usuario = {
+                ...user,
+                rol: 'User'
+            }
+        }else{
+            usuario = user
+        }
+
         let renderFind = JSON.parse(JSON.stringify(response.payload));
-        res.status(200).render('products', { title: 'Products', find: renderFind });
+        res.status(200).render('products', { title: 'Products', find: renderFind, usuario });
 
 
     } catch (err) {
@@ -68,7 +81,7 @@ productsRouterAtlas.post('/', async (req, res) => {
 })
 
 //elimino por id
-productsRouterAtlas.delete('/:id', async (req, res) => {
+productsRouterAtlas.delete('/:id', isAdmin, async (req, res) => {
     try {
         const id = req.params.id;
         const delet = await productService.deletProd(id);
@@ -80,7 +93,7 @@ productsRouterAtlas.delete('/:id', async (req, res) => {
 })
 
 //modifico por id
-productsRouterAtlas.put('/', async (req, res) => {
+productsRouterAtlas.put('/',isAdmin, async (req, res) => {
     try {
         const update = req.body
         const updateProd = await productService.updateProd(update.id, update.key, update.valor);
@@ -91,7 +104,7 @@ productsRouterAtlas.put('/', async (req, res) => {
 })
 
 //renderizo la vista para cargar el producto
-productsRouterAtlas.get('/update', (req, res) => {
+productsRouterAtlas.get('/update', isAdmin, (req, res) => {
     res.render('updateProduct');
 });
 
