@@ -51,7 +51,8 @@ cartRouterAtlas.post('/:cid/product/:pid/:quantity', async (req, res) => {
    try {
       const idCart = req.params.cid;
       const idProd = req.params.pid;
-      const quantity = req.params.quantity;
+      const quantity = parseInt(req.params.quantity);
+      console.log(quantity);
       const addProduct = await cartService.addProdCart(idCart, idProd, quantity);
       res.status(200).send(addProduct);
    }

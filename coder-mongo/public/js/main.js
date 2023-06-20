@@ -1,8 +1,10 @@
+//variables para cart
 let btn = document.querySelectorAll('.btnAddCart');
 let idCart = ''; // Variable para almacenar el ID del carrito
 let id = '';
 let btnCart = document.getElementById('goToCart');
-console.log(btnCart)
+let btnStock = document.querySelectorAll('.carrito')
+
 //logica filtrar elementos por precio
 //obtengo el nodo de cada check
 let checkPrice = document.querySelectorAll('.checkPrice');
@@ -35,7 +37,6 @@ const priceFilter = (target) => {
             //sino le agrego uno
             searchParams.append('price', price);
         }
-        console.log(currentURL)
         currentURL.search = searchParams.toString();
         const updatedURL = currentURL.toString();
 
@@ -54,24 +55,53 @@ const priceFilter = (target) => {
 }
 
 
+// ...
+
 //evento que ejecuta el botón para recolectar el dato del producto
 btn.forEach(boton => boton.addEventListener('click', (e) => {
     // Recopilo el id del producto
     id = `${e.target.value}`;
+    let counter = e.target.parentNode.querySelector('.counter');
+    let quantity = parseInt(counter.value);
 
     if (!idCart) {
         // Si el ID del carrito no está definido, crear un nuevo carrito
         createCart()
             .then(cartId => {
                 idCart = cartId; // Almacenar el ID del carrito para su posterior uso
-                sendProd(idCart, id);
+                sendProd(idCart, id, quantity);
             })
             .catch(error => console.error('Error:', error));
     } else {
         // Si el ID del carrito ya está definido, simplemente agregar el producto al carrito existente
-        sendProd(idCart, id);
+        sendProd(idCart, id, quantity); // Asegúrate de pasar "quantity" a la función "sendProd"
     }
+
+    Toastify({
+        text: "Producto agregado al carrito",
+        duration: 3000
+    }).showToast();
 }));
+
+// ...
+
+
+//evento que suma o resta la cantidad de producto q quiero agregar al carrito//
+btnStock.forEach(boton => boton.addEventListener('click', (e) => {
+    //selecciono el boton q se toca
+    let target = e.target.value;
+    //selecciono el elemento padre el elemento en el que se esta ejecutando el codigo
+    let counter = e.target.parentNode.querySelector('#counter');
+    //selecciono el valor actual
+    let valor = parseInt(counter.value);
+
+    if (target === '-' && valor > 1) {
+        counter.value = valor - 1;
+    } else if (target === '+' && valor >= 1) {
+        counter.value = valor + 1;
+    }
+
+}))
 
 //creo el carrito y recopilo el dato de su id
 const createCart = () => {
@@ -85,8 +115,9 @@ const createCart = () => {
         .catch(err => console.log('Error', err));
 };
 
-const sendProd = (cartId, productId) => {
-    let url = `http://localhost:8080/api/carts/${cartId}/product/${productId}/5`;
+const sendProd = (cartId, productId, quantity) => {
+    console.log(quantity);
+    let url = `http://localhost:8080/api/carts/${cartId}/product/${productId}/${quantity}`;
 
     fetch(url, {
         method: 'POST',

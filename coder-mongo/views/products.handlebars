@@ -75,7 +75,15 @@
                 <li class="list-group-item">Stock: {{stock}}</li>
                 <li class="list-group-item">Category: {{category}}</li>
             </ul>
-            <button href="#" class="btn btn-primary btnAddCart" value={{_id}}> Add to cart</button>
+
+            <div class="input-group pt-3">
+                <button href="#" class="btn btn-primary btnAddCart" data-bs-dismiss="toast" value="{{_id}}"> Add to
+                    cart</button>
+                <input type="button" class="btn carrito" value="-" />
+                <input type="text" class="form-control counter"  value='1' readonly />
+                <input type="button" class="btn carrito" value="+" />
+            </div>
+
         </div>
     </div>
     {{/each}}
