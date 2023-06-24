@@ -11,7 +11,10 @@ class SessionService {
     async getByEmail(email) {
         return await this.model.findOne({ email: email })
     };
-    async createUser(newUser){
+    async getByid(id) {
+        return await this.model.findOne({ _id: id })
+    }
+    async createUser(newUser) {
         return await this.model.create(newUser);
     }
 }

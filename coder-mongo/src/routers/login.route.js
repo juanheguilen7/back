@@ -1,34 +1,31 @@
 import { Router } from "express";
-import sessionService from "../dao/service/session.service.js";
+import passport from "passport";
 
 const loginRoute = Router();
 
-loginRoute.post('/', async (req, res) => {
-    const { email, password } = req.body
-    //si el email es el de coder al igual q la contraseña
-    if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-        //creo la session con esos datos y redirijo a products
-        const user = {
-            email,
-            password,
-            rol: 'Admin'
-        };
-        req.session.user = user
-        return res.redirect('/api/products')
-    }
-    //si no es eso hago la llamada a los usuarios y verifico si existen y si existen dejo paso sino los mando a registrarse
-    try {
-        const user = await sessionService.getByEmail(email);
-        if (!user) throw new Error('Invalid Data');
-        if (user.password !== password) throw new Error('Invalid Data')
-        //si todo esta bien guardo el usuario en la session
-        req.session.user = user;
-        res.redirect('/api/products');
+loginRoute.post('/', passport.authenticate('login', { failureRedirect: '/api/register' }), async (req, res) => {
 
-    } catch (err) {
-        //si no tengo usuario cargado mando a registrarse
-        res.redirect('/api/register')
+    
+    if (!req.user) return res.status(400).send({ status: "err", error: "invalid Credentials" });
+    if (req.user.email === "adminCoder@coder.com") {
+        req.session.user = {
+            first_name: "CODER",
+            last_name: "ADMINISTRADOR",
+            email: req.user.email,
+            rol: "Admin"
+        }
+    } else {
+        req.session.user = {
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            email: req.user.email,
+            age: req.user.age,
+            rol: "User"
+        }
     }
+    console.log(req.session.user)
+    res.redirect('/api/products')
+
 })
 
 loginRoute.get('/logout', (req, res) => {

@@ -3,25 +3,14 @@ import { isAuth, isGuest } from "../middleware/auth.middleware.js";
 
 
 const views = Router();
-
-views.get('/', isGuest, (req, res) => {
+views.get('/', isAuth, (req, res) => {
     res.render('login', {
         title: 'Ingresar Session'
     })
 })
 
-views.get('/api/profile', isAuth, (req, res) => {
-    //recibo el usuario conectado
-    const { user } = req.session.user;
-    //le elimino la password y paso dato para renderizar
-    delete user.password
-    res.render('index', {
-        title: 'Perfil',
-        user,
-    })
-})
-
-views.get('/api/register', isGuest, (req, res) => {
+//si no existe una session del usuario lo dejo seguir si existe lo mando a verificarse
+views.get('/api/register',isAuth, (req, res) => {
     res.render('register', {
         title: 'Registrarse'
     })

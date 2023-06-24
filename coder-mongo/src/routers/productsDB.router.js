@@ -1,12 +1,12 @@
 import { Router } from "express";
 import productService from "../dao/service/products.service.js";
 import multer from "multer";
-import { isAdmin,isAuth } from "../middleware/auth.middleware.js";
+import { isAdmin, isAuth, isGuest } from "../middleware/auth.middleware.js";
 
 const productsRouterAtlas = Router();
 const upload = multer();
 //LLAMO PRODUCTOS
-productsRouterAtlas.get('/',isAuth, async (req, res) => {
+productsRouterAtlas.get('/', isGuest, async (req, res) => {
     try {
         //parametros que puedo recibir en el get
         //estos dos por url
@@ -25,8 +25,6 @@ productsRouterAtlas.get('/',isAuth, async (req, res) => {
         !test ? test = false : test;
         !price ? price = false : price;
 
-        console.log(price, limit, test, page)
-
         let products = await productService.getSomeProducts(limit, page, test, price);
 
         const response = {
@@ -44,18 +42,9 @@ productsRouterAtlas.get('/',isAuth, async (req, res) => {
             lastLink: `/api/products?page=${products.totalPages}`,
         };
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
-        console.log(response)
         const user = req.session.user;
-        let usuario
-
-        if (user.email != 'adminCoder@coder.com') {
-            usuario = {
-                ...user,
-                rol: 'User'
-            }
-        }else{
-            usuario = user
-        }
+        console.log(user);
+        let usuario = user;
 
         let renderFind = JSON.parse(JSON.stringify(response.payload));
         res.status(200).render('products', { title: 'Products', find: renderFind, usuario });
@@ -93,7 +82,7 @@ productsRouterAtlas.delete('/:id', isAdmin, async (req, res) => {
 })
 
 //modifico por id
-productsRouterAtlas.put('/',isAdmin, async (req, res) => {
+productsRouterAtlas.put('/', isAdmin, async (req, res) => {
     try {
         const update = req.body
         const updateProd = await productService.updateProd(update.id, update.key, update.valor);

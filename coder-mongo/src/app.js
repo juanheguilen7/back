@@ -9,7 +9,9 @@ import { server, app } from '../utils.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-
+//import passport y la funcion de passport
+import passport from 'passport';
+import { initializePassport } from './config/passport.confing.js';
 
 //importo rutas
 import { productsRouterAtlas } from './routers/productsDB.router.js';
@@ -55,6 +57,10 @@ app.use(
         saveUninitialized: false,
     })
 );
+//declaramos los middlewares
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //conectando a Atlas
 const environment = async () => {
