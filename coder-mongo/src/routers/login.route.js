@@ -5,7 +5,7 @@ const loginRoute = Router();
 
 loginRoute.post('/', passport.authenticate('login', { failureRedirect: '/api/register' }), async (req, res) => {
 
-    
+
     if (!req.user) return res.status(400).send({ status: "err", error: "invalid Credentials" });
     if (req.user.email === "adminCoder@coder.com") {
         req.session.user = {
@@ -26,6 +26,20 @@ loginRoute.post('/', passport.authenticate('login', { failureRedirect: '/api/reg
     console.log(req.session.user)
     res.redirect('/api/products')
 
+})
+
+//pide autorizacion para acceder a la info de github
+loginRoute.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
+
+loginRoute.get('/githubcb', passport.authenticate('github', { failureRedirect: '/api/register' }), async (req, res) => {
+    //agregamos el objeto a la session
+
+    req.session.user = {
+        ...req.user._doc,
+        rol: 'User'
+    }
+    console.log(req.session.user)
+    res.redirect('/api/products');
 })
 
 loginRoute.get('/logout', (req, res) => {

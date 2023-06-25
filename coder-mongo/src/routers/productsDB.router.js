@@ -17,7 +17,6 @@ productsRouterAtlas.get('/', isGuest, async (req, res) => {
         let test = req.query.test;
 
         let price = parseInt(req.query.price);
-        console.log(price)
 
 
         !limit ? limit = 10 : limit;
@@ -43,7 +42,6 @@ productsRouterAtlas.get('/', isGuest, async (req, res) => {
         };
         //SOLUCION QUE BUSQUE PARA PODER PASAR A RENDERIZAR ALGO QUE PUEDA BUSCAR
         const user = req.session.user;
-        console.log(user);
         let usuario = user;
 
         let renderFind = JSON.parse(JSON.stringify(response.payload));

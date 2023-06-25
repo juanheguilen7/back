@@ -4,30 +4,35 @@ import local from 'passport-local';
 import sessionService from "../dao/service/session.service.js";
 import { createHash, validPassword } from "../../utils.js";
 
+//github
+import GitHubStrategy from "passport-github2";
+
+//constantes github
+const GITHUB_CLIENT_ID = 'Iv1.234b8c89cf5e9ae2';
+const GITHUB_CLIENT_SECRET = '8f76f12de5f207ad93f977d1931f190cb901eb3d';
+const CALLBACK_URL = 'http://localhost:8080/api/login/githubcb';
+
+
 const LocalStrategy = local.Strategy
 
 export const initializePassport = () => {
 
-    //estrategia para register
+    //ESTRATEGIA DE REGISTRO LOCAL
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             //recibo los datos del body
             const { first_name, last_name, email, age } = req.body;
-
             try {
                 //para que no se cree usuario con el mail de coder
                 if (email === "adminCoder@coder.com") {
                     return done(null, false, { message: 'Correo electronico no valido' })
                 }
-
                 //verifico que no exista ese usuario
                 let user = await sessionService.getByEmail(username);
-
                 if (user) {
                     //si existe, envio un null que no hay errr, pero el usuario no esta disponible
                     return done(null, false, { message: 'the user is not available' });
                 }
-
                 //si no existe creo el nuevo usuario con su hasheo
                 const newUser = {
                     first_name,
@@ -36,7 +41,6 @@ export const initializePassport = () => {
                     age,
                     password: createHash(password)
                 }
-
                 //creo el usuario
                 let result = await sessionService.createUser(newUser)
 
@@ -49,31 +53,23 @@ export const initializePassport = () => {
         }
     ))
 
-
     //serializar y deserializar usuario
     passport.serializeUser((user, done) => {
-        console.log(user);
         return done(null, user._id);
     });
     passport.deserializeUser(async (id, done) => {
         if (id === "coder") {
             return done(null, false);
-
         } else {
-            console.log(id);
             let user = await sessionService.getByid(id);
             if (!user) return done(null, false, { message: 'User not found' })
             return done(null, user);
-
         }
-
     })
 
-    //creacion de estrategia para login
+    //ESTRATEGIA DE LOGIN LOCAL
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
-
         try {
-
             if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
                 //creo la session con esos datos y redirijo a products
                 const user = {
@@ -81,28 +77,55 @@ export const initializePassport = () => {
                     rol: "Admin",
                     _id: "coder"
                 };
-
                 return done(null, user);
             }
-
             const user = await sessionService.getByEmail(username);
             //verifico que el usuario exista
             if (!user) {
                 //si no existe envio message
                 return done(null, false, { message: 'User doesn`t exist' })
             }
-
             //verifico que la passwrod, coresponda con el user //con el compare(del hash)
             if (!validPassword(user, password)) return done(null, false, { message: "the password not is valid" });
-
             //en caso de que se cumplan ambas, respondo que no hay erro, y envio el user
             return done(null, user);
-
         } catch (err) {
-
             return done(`Error user not found ${err}`)
         }
     }))
+
+
+    //ENTRA LA ESTRATEGIA DE GITHUB, QUE RECIBE UN {} CON DATOS DE MI APP Y UNA CB CON DATOS DEL USER
+    passport.use('github', new GitHubStrategy({
+        clientID: GITHUB_CLIENT_ID,
+        clientSecret: GITHUB_CLIENT_SECRET,
+        callbackURL: CALLBACK_URL
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            console.log(profile) //toda la info que viene del perfil.
+            let user = await sessionService.getByEmail(profile._json.email);
+            //si el usuario no existe
+            if (!user) {
+                let newUser = {
+                    first_name: profile._json.name,
+                    last_name: "Logeado desde Git",// datos q no vienen con github
+                    age: 1,//datos q no vienen con github
+                    email: profile._json.email,
+                    password: ''//con autenticacion de terceros no se tiene password
+                }
+                //creo el usuario en la dataBase
+                let result = await sessionService.createUser(newUser)
+                done(null, result)
+            } else {
+                //el usuario ya existe
+                done(null, user)
+            }
+
+        } catch (err) {
+            return done(err);
+        }
+    }))
+
 }
 
 
