@@ -9,10 +9,10 @@ class SessionService {
         return await this.model.find()
     };
     async getByEmail(email) {
-        return await this.model.findOne({ email: email })
+        return await this.model.findOne({ email: email }).populate('cartID')
     };
     async getByid(id) {
-        return await this.model.findOne({ _id: id })
+        return await this.model.findOne({ _id: id }).populate('cartID')
     }
     async createUser(newUser) {
         return await this.model.create(newUser);

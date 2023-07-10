@@ -29,9 +29,9 @@ class CartService {
     async addProdCart(idCart, idProd, cantidad) {
         let doc = await this.model.findById(idCart);//busco producto por id
         //pusheo, el id del prod, y la cantidad
-        console.log(idCart,idProd,cantidad);
+        console.log(idCart, idProd, cantidad);
         doc.products.push({ idProd: idProd, quantity: cantidad });
-        
+
         doc.save(); //guardo
         return doc;
     };

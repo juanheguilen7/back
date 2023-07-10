@@ -1,7 +1,5 @@
 let btn = document.getElementById('btnData');
 
-
-
 btn.addEventListener('click', (e) => {
     e.preventDefault();
     let title = document.getElementById('title').value;

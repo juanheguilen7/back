@@ -20,7 +20,7 @@ import { messagesRouteAtlas } from './routers/messagesDB.router.js';
 import { views } from './routers/viewsSession.route.js';
 import { registerRoute } from './routers/register.route.js';
 import { loginRoute } from './routers/login.route.js';
-
+import { CurrentRouter } from './routers/current.route.js';
 //parseo a json
 app.use(express.json())
 //permite recibir datos complejos desde las url
@@ -35,28 +35,36 @@ app.set('views', __dirname + '/views');
 //a mis views las procesas con esto
 app.set('view engine', 'handlebars');
 
-
-
 //uso de cookies
 app.use(cookieParser('B2zdY3B$pHmxW%'));
+
 // Session
 app.use(
     session({
         //store define la configuracion de almacenamiento para las sessiones. uso mongoStore
         store: MongoStore.create({
+            name:'coderCokieToken',
             mongoUrl:
                 'mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority',
             mongoOptions: {
                 useNewUrlParser: true,
             },
-            ttl: 6000,//esta en segundos
+            ttl: 6000, //esta en segundos
         }),
         //es una cadena usada para firmar la session,(es decir una cookie firmada)
         secret: 'B2zdY3B$pHmxW%',
         resave: false,
         saveUninitialized: false,
+        cookie: {
+            // Aquí puedes configurar otras opciones de la cookie, si es necesario
+            // Por ejemplo, puedes agregar "secure: true" si estás utilizando HTTPS
+            // y "httpOnly: true" para mejorar la seguridad
+            // ...
+            // name: 'coderCookieToken',  // No es necesario configurar el nombre aquí
+        },
     })
 );
+
 //declaramos los middlewares
 initializePassport();
 app.use(passport.initialize());
@@ -77,5 +85,6 @@ app.use('/api/chat', messagesRouteAtlas);
 app.use('/', views);
 app.use('/api/register', registerRoute)
 app.use('/api/login', loginRoute)
+app.use('/api/session', CurrentRouter)
 //habilito la escucha del server
 const webServer = server.listen('8080', () => { console.log('Levantando server') });

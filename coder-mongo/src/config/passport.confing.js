@@ -1,8 +1,12 @@
 //de este lado manejo passport que es generador de estrategia de autenticacion y autorizacion, y tambien el manejo del hasheo
 import passport from "passport";
 import local from 'passport-local';
+//jwt
+import jwt_strategy from 'passport-jwt';
+import jwt from 'jsonwebtoken'
 import sessionService from "../dao/service/session.service.js";
 import { createHash, validPassword } from "../../utils.js";
+import cartService from "../dao/service/carts.service.js";
 
 //github
 import GitHubStrategy from "passport-github2";
@@ -14,9 +18,19 @@ const CALLBACK_URL = 'http://localhost:8080/api/login/githubcb';
 
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = jwt_strategy.Strategy; //core de la estrategia
+const ExtractJWT = jwt_strategy.ExtractJwt; //extractor de jwt
+const cookieExtractor = req => {
+    let token = null;
+    if (req && req.cookies) {
+        console.log(req.cookies)
+        token = req.cookies['coderCookieToken'] // se toma solo la cookie que se necesita
+    }
+    return token
+}
+
 
 export const initializePassport = () => {
-
     //ESTRATEGIA DE REGISTRO LOCAL
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
@@ -33,13 +47,17 @@ export const initializePassport = () => {
                     //si existe, envio un null que no hay errr, pero el usuario no esta disponible
                     return done(null, false, { message: 'the user is not available' });
                 }
+                //creo el cart nuevo
+                let newCart = await cartService.createCart();
                 //si no existe creo el nuevo usuario con su hasheo
                 const newUser = {
                     first_name,
                     last_name,
                     email,
                     age,
-                    password: createHash(password)
+                    password: createHash(password),
+                    cartID: newCart._id, //inserto el id del cart creado, asociado a ese user
+                    role: 'user'
                 }
                 //creo el usuario
                 let result = await sessionService.createUser(newUser)
@@ -47,7 +65,6 @@ export const initializePassport = () => {
                 //respondo que no hay error, y el resultdo
                 return done(null, result);
             } catch (err) {
-
                 return done(`Error creating user ${err}`);
             }
         }
@@ -66,7 +83,6 @@ export const initializePassport = () => {
             return done(null, user);
         }
     })
-
     //ESTRATEGIA DE LOGIN LOCAL
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
         try {
@@ -74,9 +90,11 @@ export const initializePassport = () => {
                 //creo la session con esos datos y redirijo a products
                 const user = {
                     email: username,
-                    rol: "Admin",
+                    role: "Admin",
                     _id: "coder"
                 };
+                // Generar el token y firmarlo
+                const token = jwt.sign({ user }, 'B2zdY3B$pHmxW%');
                 return done(null, user);
             }
             const user = await sessionService.getByEmail(username);
@@ -88,9 +106,22 @@ export const initializePassport = () => {
             //verifico que la passwrod, coresponda con el user //con el compare(del hash)
             if (!validPassword(user, password)) return done(null, false, { message: "the password not is valid" });
             //en caso de que se cumplan ambas, respondo que no hay erro, y envio el user
+            const token = jwt.sign({ user }, 'B2zdY3B$pHmxW%');
             return done(null, user);
         } catch (err) {
             return done(`Error user not found ${err}`)
+        }
+    }))
+    //estrategia de JSONWebToken 
+    passport.use('current', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([ cookieExtractor ]),//extraigo de cookies y este valor lo deserializa
+        secretOrKey: 'B2zdY3B$pHmxW%', //corrobora que sea el mismo secret que en app.js
+
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload);
+        } catch (err) {
+            return done(err);
         }
     }))
 
@@ -106,12 +137,15 @@ export const initializePassport = () => {
             let user = await sessionService.getByEmail(profile._json.email);
             //si el usuario no existe
             if (!user) {
+                let newCart = await cartService.createCart();
                 let newUser = {
                     first_name: profile._json.name,
-                    last_name: "Logeado desde Git",// datos q no vienen con github
+                    last_name: "Logueado desde Git",// datos q no vienen con github
                     age: 1,//datos q no vienen con github
                     email: profile._json.email,
-                    password: ''//con autenticacion de terceros no se tiene password
+                    password: '',
+                    cartID: newCart._id, //inserto el id del cart creado, asociado a ese user
+                    role: 'user' //con autenticacion de terceros no se tiene password
                 }
                 //creo el usuario en la dataBase
                 let result = await sessionService.createUser(newUser)
@@ -127,6 +161,5 @@ export const initializePassport = () => {
     }))
 
 }
-
 
 

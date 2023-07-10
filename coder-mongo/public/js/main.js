@@ -58,7 +58,7 @@ const priceFilter = (target) => {
 // ...
 
 //evento que ejecuta el botón para recolectar el dato del producto
-btn.forEach(boton => boton.addEventListener('click', (e) => {
+btn.forEach((boton) => boton.addEventListener('click', (e) => {
     // Recopilo el id del producto
     id = `${e.target.value}`;
     let counter = e.target.parentNode.querySelector('.counter');
@@ -87,11 +87,12 @@ btn.forEach(boton => boton.addEventListener('click', (e) => {
 
 
 //evento que suma o resta la cantidad de producto q quiero agregar al carrito//
-btnStock.forEach(boton => boton.addEventListener('click', (e) => {
+btnStock.forEach((boton) => boton.addEventListener('click', (e) => {
     //selecciono el boton q se toca
     let target = e.target.value;
     //selecciono el elemento padre el elemento en el que se esta ejecutando el codigo
-    let counter = e.target.parentNode.querySelector('#counter');
+    let counter = e.target.parentNode.querySelector('.counter');
+    console.log(counter)
     //selecciono el valor actual
     let valor = parseInt(counter.value);
 
@@ -104,15 +105,18 @@ btnStock.forEach(boton => boton.addEventListener('click', (e) => {
 }))
 
 //creo el carrito y recopilo el dato de su id
-const createCart = () => {
+const createCart = async () => {
     let url = "http://localhost:8080/api/carts/";
 
-    return fetch(url, {
-        method: 'POST',
-    })
-        .then(res => res.json())
-        .then(data => idCart = data._id) // Asumiendo que el servidor devuelve el ID del carrito en la propiedad "cartId"
-        .catch(err => console.log('Error', err));
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+        });
+        const data = await res.json();
+        return idCart = data._id;
+    } catch (err) {
+        return console.log('Error', err);
+    }
 };
 
 const sendProd = (cartId, productId, quantity) => {
@@ -129,6 +133,7 @@ const sendProd = (cartId, productId, quantity) => {
             updateCartButton(response._id); // Actualizar el estado del botón después de completar la operación
         });
 };
+
 const updateCartButton = (id) => {
     console.log(id)
     if (id) {
@@ -136,3 +141,6 @@ const updateCartButton = (id) => {
         btnCart.classList.remove('d-none');
     }
 };
+
+const cookieValue = document.cookie
+    .split('; ')
