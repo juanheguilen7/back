@@ -11,7 +11,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 //import passport y la funcion de passport
 import passport from 'passport';
-import { initializePassport } from './config/passport.confing.js';
+import { initializePassport } from './config/passport.config.js';
 
 //importo rutas
 import { productsRouterAtlas } from './routers/productsDB.router.js';

@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 export function isAuth(req, res, next) {
     //si existe un suuario lo dejo seguir
     if (req.session.user) {
@@ -29,3 +31,19 @@ export function isAdmin(req, res, next) {
     // Si el es administrador, continuar con la siguiente función de middleware
     next()
 };
+
+export function authToken(req, res, next) {
+    
+    if (req.session.user) {
+        // Genera el token y firmalo
+        const user = req.session.user;
+        const token = jwt.sign({ user }, 'B2zdY3B$pHmxW%');
+
+        // Envía el token en una cookie
+        res.cookie('jwt', token, { httpOnly: true });
+
+        return next();
+    } else {
+        return res.send({ err: 'No hay usuario autorizado' });
+    }
+}

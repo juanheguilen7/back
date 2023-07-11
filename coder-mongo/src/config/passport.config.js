@@ -20,14 +20,13 @@ const CALLBACK_URL = 'http://localhost:8080/api/login/githubcb';
 const LocalStrategy = local.Strategy
 const JWTStrategy = jwt_strategy.Strategy; //core de la estrategia
 const ExtractJWT = jwt_strategy.ExtractJwt; //extractor de jwt
-const cookieExtractor = req => {
+const cookieExtractor = (req) => {
     let token = null;
     if (req && req.cookies) {
-        console.log(req.cookies)
-        token = req.cookies['coderCookieToken'] // se toma solo la cookie que se necesita
+        token = req.cookies['jwt'];
     }
-    return token
-}
+    return token;
+};
 
 
 export const initializePassport = () => {
@@ -93,8 +92,6 @@ export const initializePassport = () => {
                     role: "Admin",
                     _id: "coder"
                 };
-                // Generar el token y firmarlo
-                const token = jwt.sign({ user }, 'B2zdY3B$pHmxW%');
                 return done(null, user);
             }
             const user = await sessionService.getByEmail(username);
@@ -106,7 +103,6 @@ export const initializePassport = () => {
             //verifico que la passwrod, coresponda con el user //con el compare(del hash)
             if (!validPassword(user, password)) return done(null, false, { message: "the password not is valid" });
             //en caso de que se cumplan ambas, respondo que no hay erro, y envio el user
-            const token = jwt.sign({ user }, 'B2zdY3B$pHmxW%');
             return done(null, user);
         } catch (err) {
             return done(`Error user not found ${err}`)
@@ -114,7 +110,7 @@ export const initializePassport = () => {
     }))
     //estrategia de JSONWebToken 
     passport.use('current', new JWTStrategy({
-        jwtFromRequest: ExtractJWT.fromExtractors([ cookieExtractor ]),//extraigo de cookies y este valor lo deserializa
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),//extraigo de cookies y este valor lo deserializa
         secretOrKey: 'B2zdY3B$pHmxW%', //corrobora que sea el mismo secret que en app.js
 
     }, async (jwt_payload, done) => {
@@ -133,7 +129,6 @@ export const initializePassport = () => {
         callbackURL: CALLBACK_URL
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log(profile) //toda la info que viene del perfil.
             let user = await sessionService.getByEmail(profile._json.email);
             //si el usuario no existe
             if (!user) {

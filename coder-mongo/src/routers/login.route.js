@@ -21,7 +21,6 @@ loginRoute.post('/', passport.authenticate('login', { failureRedirect: '/api/reg
             role: req.user.role
         }
     }
-    console.log(req.session.user)
     res.redirect('/api/products')
 })
 
