@@ -21,6 +21,8 @@ import { views } from './routers/viewsSession.route.js';
 import { registerRoute } from './routers/register.route.js';
 import { loginRoute } from './routers/login.route.js';
 import { CurrentRouter } from './routers/current.route.js';
+//variables de entonro
+import config from './config/config.js';
 //parseo a json
 app.use(express.json())
 //permite recibir datos complejos desde las url
@@ -37,15 +39,13 @@ app.set('view engine', 'handlebars');
 
 //uso de cookies
 app.use(cookieParser('B2zdY3B$pHmxW%'));
-
 // Session
 app.use(
     session({
         //store define la configuracion de almacenamiento para las sessiones. uso mongoStore
         store: MongoStore.create({
             name:'coderCokieToken',
-            mongoUrl:
-                'mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority',
+            mongoUrl:config.MONGO_URL,
             mongoOptions: {
                 useNewUrlParser: true,
             },

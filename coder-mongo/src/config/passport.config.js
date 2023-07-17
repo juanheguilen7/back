@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken'
 import sessionService from "../dao/service/session.service.js";
 import { createHash, validPassword } from "../../utils.js";
 import cartService from "../dao/service/carts.service.js";
+//variables de entorno
+import config from './config.js'
 
 //github
 import GitHubStrategy from "passport-github2";
@@ -37,7 +39,7 @@ export const initializePassport = () => {
             const { first_name, last_name, email, age } = req.body;
             try {
                 //para que no se cree usuario con el mail de coder
-                if (email === "adminCoder@coder.com") {
+                if (email === config.ADMIN_EMAIL) {
                     return done(null, false, { message: 'Correo electronico no valido' })
                 }
                 //verifico que no exista ese usuario
@@ -85,7 +87,7 @@ export const initializePassport = () => {
     //ESTRATEGIA DE LOGIN LOCAL
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
         try {
-            if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+            if (username === config.ADMIN_EMAIL && password === config.ADMIN_PASSWORD) {
                 //creo la session con esos datos y redirijo a products
                 const user = {
                     email: username,
