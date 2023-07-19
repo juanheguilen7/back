@@ -79,7 +79,7 @@ productsRouterAtlas.delete('/:id', isAdmin, async (req, res) => {
     }
 })
 
-//modifico por id
+//modifico por id asdasdasd asdasdasd
 productsRouterAtlas.put('/', isAdmin, async (req, res) => {
     try {
         const update = req.body
