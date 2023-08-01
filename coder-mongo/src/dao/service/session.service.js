@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model.js";
+import UserDTO from "../../dto/user.dto.js";
 
 class SessionService {
     constructor() {
@@ -15,7 +16,8 @@ class SessionService {
         return await this.model.findOne({ _id: id }).populate('cartID')
     }
     async createUser(newUser) {
-        return await this.model.create(newUser);
+        let nuevo = new UserDTO(newUser) //usando DTO
+        return await this.model.create(nuevo);
     }
 }
 

@@ -8,6 +8,5 @@ export default class ProductDTO {
         this.category = category;
         this.img = img;
         this.status = status;
-
     }
 }
