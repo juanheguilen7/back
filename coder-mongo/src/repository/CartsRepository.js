@@ -1,6 +1,5 @@
 import CartRepositoryInterface from "./CartsRepositoryInterface.js";
 import { CartsModel } from "../dao/models/carts.model.js";
-import CartsDTO from "../dto/carts.dto.js";
 
 export default class CartRepository extends CartRepositoryInterface {
     async createCart() {

@@ -43,7 +43,7 @@ export const initializePassport = () => {
                     return done(null, false, { message: 'Correo electronico no valido' })
                 }
                 //verifico que no exista ese usuario
-                let user = await sessionService.getByEmail(username);
+                let user = await sessionService.getUserByEmail(username);
                 if (user) {
                     //si existe, envio un null que no hay errr, pero el usuario no esta disponible
                     return done(null, false, { message: 'the user is not available' });
@@ -79,7 +79,7 @@ export const initializePassport = () => {
         if (id === "coder") {
             return done(null, false);
         } else {
-            let user = await sessionService.getByid(id);
+            let user = await sessionService.getUserById(id);
             if (!user) return done(null, false, { message: 'User not found' })
             return done(null, user);
         }
@@ -96,7 +96,7 @@ export const initializePassport = () => {
                 };
                 return done(null, user);
             }
-            const user = await sessionService.getByEmail(username);
+            const user = await sessionService.getUserByEmail(username);
             //verifico que el usuario exista
             if (!user) {
                 //si no existe envio message
@@ -131,7 +131,7 @@ export const initializePassport = () => {
         callbackURL: CALLBACK_URL
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            let user = await sessionService.getByEmail(profile._json.email);
+            let user = await sessionService.getUserByEmail(profile._json.email);
             //si el usuario no existe
             if (!user) {
                 let newCart = await cartService.createCart();

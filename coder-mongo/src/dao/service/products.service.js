@@ -13,7 +13,7 @@ class ProductService {
         return await this.repository.addProduct(product);
     }
 
-    async getProductById(productId) {
+    async getProductByID(productId) {
         return await this.repository.getProductById(productId);
     }
 
