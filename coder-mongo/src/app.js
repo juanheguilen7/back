@@ -14,13 +14,13 @@ import passport from 'passport';
 import { initializePassport } from './config/passport.config.js';
 
 //importo rutas
-import { productsRouterAtlas } from './routers/productsDB.router.js';
-import { cartRouterAtlas } from './routers/cartsDB.router.js';
-import { messagesRouteAtlas } from './routers/messagesDB.router.js';
-import { views } from './routers/viewsSession.route.js';
-import { registerRoute } from './routers/register.route.js';
-import { loginRoute } from './routers/login.route.js';
-import { CurrentRouter } from './routers/current.route.js';
+import { productsRouterAtlas } from './routes/productsDB.router.js';
+import { cartRouterAtlas } from './routes/cartsDB.router.js';
+import { messagesRouteAtlas } from './routes/messagesDB.router.js';
+import { views } from './routes/viewsSession.route.js';
+import { registerRoute } from './routes/register.route.js';
+import { loginRoute } from './routes/login.route.js';
+import { CurrentRouter } from './routes/current.route.js';
 //variables de entonro
 import config from './config/config.js';
 //parseo a json
