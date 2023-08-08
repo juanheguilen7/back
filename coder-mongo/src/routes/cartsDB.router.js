@@ -1,12 +1,12 @@
 import { Router } from "express";
-import cartService from '../dao/service/carts.service.js';
+import cartRepository from "../repository/CartsRepository.js"
 import { notForAdmin } from "../middleware/auth.middleware.js";
 const cartRouterAtlas = Router();
 
 //CREO CARRITO(funciona)
 cartRouterAtlas.post('/', async (req, res) => {
    try {
-      const newCart = await cartService.createCart();
+      const newCart = await cartRepository.add();
       res.status(200).send(newCart)
 
    } catch (err) {
@@ -19,7 +19,7 @@ cartRouterAtlas.post('/', async (req, res) => {
 //LLAMO A TODOS LOS CARRITOS (funciona)
 cartRouterAtlas.get('/', async (req, res) => {
    try {
-      const carts = await cartService.getAllCarts();
+      const carts = await cartRepository.getCarts();
       res.status(200).send(carts);
 
    }
@@ -34,7 +34,7 @@ cartRouterAtlas.get('/:cid', async (req, res) => {
    try {
       const id = req.params.cid;
 
-      const findCart = await cartService.cartById(id);
+      const findCart = await cartRepository.getById(id);
 
       console.log(findCart);
       //para poder acceder a los productos
@@ -53,7 +53,7 @@ cartRouterAtlas.post('/:cid/product/:pid/:quantity', notForAdmin, async (req, re
       const idProd = req.params.pid;
       const quantity = parseInt(req.params.quantity);
       console.log(quantity);
-      const addProduct = await cartService.addProdCart(idCart, idProd, quantity);
+      const addProduct = await cartRepository.push(idCart, idProd, quantity);
       res.status(200).send(addProduct);
    }
    catch (err) {
@@ -68,7 +68,7 @@ cartRouterAtlas.put('/:cid/products/:pid',notForAdmin, async (req, res) => {
       let idProd = req.params.pid;
       let quantity = req.body.quantity
 
-      await cartService.updateProd(idCart, idProd, quantity);
+      await cartRepository.updateProd(idCart, idProd, quantity);
       res.status(200).send('cantidad modificada');
 
    } catch (err) {
@@ -83,7 +83,7 @@ cartRouterAtlas.put('/:cid', async (req, res) => {
       let idCart = req.params.cid;
       //products es una array de obj [{idProd, quantity},{idProd, quantity}]
       let products = req.body;
-      await cartService.updateProducts(idCart, products)
+      await cartRepository.updateProducts(idCart, products)
       res.status(200).send('Productos agregados')
    } catch (err) {
       res.status(400).send({ err })
@@ -96,7 +96,7 @@ cartRouterAtlas.delete('/:cid/products/:pid', async (req, res) => {
       const id = req.params.cid //obtengo id del cart
       const prodId = req.params.pid//obtengo id del prod
 
-      let deletProd = await cartService.deletProd(id, prodId);//metodo que busca y carrito, y eliminar el prod que coincide.
+      let deletProd = await cartRepository.deleteProd(id, prodId);//metodo que busca y carrito, y eliminar el prod que coincide.
 
       res.status(200).send(deletProd);//devuelvo el cart;
    } catch (err) {
@@ -108,7 +108,7 @@ cartRouterAtlas.delete('/:cid/products/:pid', async (req, res) => {
 cartRouterAtlas.delete('/:cid', async (req, res) => {
    try {
       const id = req.params.cid//obtengo el id del cart
-      const delet = await cartService.vaciarCarrito(id);//metodo que vacia los products
+      const delet = await cartRepository.empty(id);//metodo que vacia los products
       res.status(200).send(delet);//devuelvo cart vacio;
 
    } catch (err) {

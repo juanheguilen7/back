@@ -1,5 +1,5 @@
 import { Router } from "express";
-import productService from "../dao/service/products.service.js";
+import productRepository from "../repository/ProductsRepository.js";
 import multer from "multer";
 import { isAdmin, isAuth, isGuest } from "../middleware/auth.middleware.js";
 
@@ -24,7 +24,7 @@ productsRouterAtlas.get('/', isGuest, async (req, res) => {
         !test ? test = false : test;
         !price ? price = false : price;
 
-        let products = await productService.getSomeProducts(limit, page, test, price);
+        let products = await productRepository.get(limit, page, test, price);
 
         const response = {
             status: "success",
@@ -58,7 +58,7 @@ productsRouterAtlas.get('/', isGuest, async (req, res) => {
 productsRouterAtlas.post('/', async (req, res) => {
     try {
         const product = req.body;
-        const downloadProduct = await productService.addProduct(product);
+        const downloadProduct = await productRepository.add(product);
         res.status(200).send(`producto cargador ${downloadProduct}`)
     }
     catch (err) {
@@ -71,7 +71,7 @@ productsRouterAtlas.post('/', async (req, res) => {
 productsRouterAtlas.delete('/:id', isAdmin, async (req, res) => {
     try {
         const id = req.params.id;
-        const delet = await productService.deletProd(id);
+        const delet = await productRepository.delete(id);
         res.status(204).send("eliminado")
     } catch (err) {
 
@@ -83,7 +83,7 @@ productsRouterAtlas.delete('/:id', isAdmin, async (req, res) => {
 productsRouterAtlas.put('/', isAdmin, async (req, res) => {
     try {
         const update = req.body
-        const updateProd = await productService.updateProd(update.id, update.key, update.valor);
+        const updateProd = await productRepository.update(update.id, update.key, update.valor);
         res.status(200).send(updateProd);
     } catch (err) {
         res.status(501).send({ err })
@@ -112,7 +112,7 @@ productsRouterAtlas.post('/update', upload.single('file'), async (req, res) => {
                 contentType: req.file.mimetype
             }
         }
-        await productService.addProduct(newProd);
+        await productRepository.add(newProd);
         res.status(200).send('se cargo el producto')
 
     } catch (err) {
@@ -123,7 +123,7 @@ productsRouterAtlas.post('/update', upload.single('file'), async (req, res) => {
 //METODO QUE TRAE LA IMAGEN DEL PRODUCTO EN UNA URI, QUE DESPUES USO PARA EL DOM
 productsRouterAtlas.get('/image/:productId', async (req, res) => {
     try {
-        const product = await productService.getProductByID(req.params.productId);
+        const product = await productRepository.getById(req.params.productId);
         //recibo el producto, y verifico que teng imagen
         if (!product || !product.img.data) {
             return res.status(404).send('Imagen no encontrada');

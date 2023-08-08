@@ -1,33 +1,23 @@
-import MessagesRepositoryInterface from './MessagesRepositoryInterface.js';
-import MessageDTO from '../dto/messages.dto.js';
-import { MessagesModel } from '../dao/models/messages.model.js';
+import MessagesService from "../dao/service/messages.service";
 
-
-export default class MessagesRepository extends MessagesRepositoryInterface {
-
-    async getMessages() {
-        return await MessagesModel.find({}).select('user message');
+class MessageRepository {
+    constructor() {
+        this.dao = new MessagesService()
     }
-
-    async createModelUser(usuario) {
-        const newUser = new MessageDTO(usuario);
-        return await MessagesModel.create(newUser);
+    async get() {
+        const message = await this.dao.getMessages();
+        return message
     }
-
-    async saveMsj(dato) {
-        const msj = [dato.msj];
-        const chat = await MessagesModel.findOne({ email: dato.email });
-
-        if (chat) {
-            const before = chat.message;
-            const after = [...before, ...msj];
-            chat.message = after;
-            return await chat.save();
-        } else {
-            return await MessagesModel.updateOne(
-                { email: dato.email },
-                { message: msj }
-            );
-        }
+    async save(msj) {
+        const save = await this.dao.saveMsj(msj);
+        return save
+    }
+    async add(user) {
+        const newUser = await this.dao.createModelUser(user);
+        return newUser;
     }
 }
+
+const messageReposository = new MessageRepository();
+
+export default messageReposository;

@@ -21,7 +21,7 @@ class CartRepository {
 
     }
     async push(id, prodId, quantity) {
-        const push = await this.dao.addProductToCart(id, prodId.quantity);
+        const push = await this.dao.addProductToCart(id, prodId,quantity);
         return push;
     }
     async delete(id) {
@@ -38,8 +38,8 @@ class CartRepository {
         return cart;
     }
 
-    async updateProd(id, product) {
-        const update = this.dao.updateProductInCart(id, product);
+    async updateProd(id, product,quantity) {
+        const update = this.dao.updateProductInCart(id, product,quantity);
         return update
     }
 

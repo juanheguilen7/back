@@ -1,5 +1,5 @@
 import { Router } from "express";
-import messagesService from '../dao/service/messages.service.js'
+import messageReposository from "../repository/MessagesRepository.js";
 import { io } from "../../utils.js";
 import { notForAdmin } from "../middleware/auth.middleware.js";
 const messagesRouteAtlas = Router();
@@ -26,7 +26,7 @@ io.on('connection', async (socket) => {
         //lo agrego al objeto
         usuario.user = user;
         //tengo el mail y el alias, creo un doc usuario con eso y un array vacio del message
-        let agregarDB = await messagesService.createModelUser(usuario);
+        let agregarDB = await messageReposository.add(usuario);
 
     })
 
@@ -35,7 +35,7 @@ io.on('connection', async (socket) => {
         //envio datos para que guarde
         await messagesService.saveMsj(dato);
         //lo emito al cliente para que lo dibuje
-        io.emit('messages', await messagesService.getMessages())
+        io.emit('messages', await messageReposository.get())
     })
 
 })
