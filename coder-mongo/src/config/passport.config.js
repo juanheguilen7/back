@@ -4,9 +4,9 @@ import local from 'passport-local';
 //jwt
 import jwt_strategy from 'passport-jwt';
 import jwt from 'jsonwebtoken'
-import sessionService from "../dao/service/session.service.js";
+import userRepository  from "../repository/UserRepository.js";
 import { createHash, validPassword } from "../../utils.js";
-import cartService from "../dao/service/carts.service.js";
+import cartRepository from "../repository/CartsRepository.js";
 //variables de entorno
 import config from './config.js'
 
@@ -43,13 +43,13 @@ export const initializePassport = () => {
                     return done(null, false, { message: 'Correo electronico no valido' })
                 }
                 //verifico que no exista ese usuario
-                let user = await sessionService.getUserByEmail(username);
+                let user = await userRepository.getUserByEmail(username);
                 if (user) {
                     //si existe, envio un null que no hay errr, pero el usuario no esta disponible
                     return done(null, false, { message: 'the user is not available' });
                 }
                 //creo el cart nuevo
-                let newCart = await cartService.createCart();
+                let newCart = await cartRepository.create();
                 //si no existe creo el nuevo usuario con su hasheo
                 const newUser = {
                     first_name,
@@ -61,7 +61,7 @@ export const initializePassport = () => {
                     role: 'user'
                 }
                 //creo el usuario
-                let result = await sessionService.createUser(newUser)
+                let result = await userRepository.create(newUser)
 
                 //respondo que no hay error, y el resultdo
                 return done(null, result);
@@ -79,7 +79,7 @@ export const initializePassport = () => {
         if (id === "coder") {
             return done(null, false);
         } else {
-            let user = await sessionService.getUserById(id);
+            let user = await userRepository.getById(id);
             if (!user) return done(null, false, { message: 'User not found' })
             return done(null, user);
         }
@@ -96,7 +96,7 @@ export const initializePassport = () => {
                 };
                 return done(null, user);
             }
-            const user = await sessionService.getUserByEmail(username);
+            const user = await userRepository.getByEmail(username);
             //verifico que el usuario exista
             if (!user) {
                 //si no existe envio message
@@ -131,10 +131,10 @@ export const initializePassport = () => {
         callbackURL: CALLBACK_URL
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            let user = await sessionService.getUserByEmail(profile._json.email);
+            let user = await userRepository.getByEmail(profile._json.email);
             //si el usuario no existe
             if (!user) {
-                let newCart = await cartService.createCart();
+                let newCart = await cartRepository.create();
                 let newUser = {
                     first_name: profile._json.name,
                     last_name: "Logueado desde Git",// datos q no vienen con github
@@ -145,7 +145,7 @@ export const initializePassport = () => {
                     role: 'user' //con autenticacion de terceros no se tiene password
                 }
                 //creo el usuario en la dataBase
-                let result = await sessionService.createUser(newUser)
+                let result = await userRepository.create(newUser)
                 done(null, result)
             } else {
                 //el usuario ya existe

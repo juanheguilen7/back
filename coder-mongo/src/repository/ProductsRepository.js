@@ -1,39 +1,20 @@
-import ProductRepositoryInterface from "./ProductsRepositoryInterface.js";
-import { ProductModel } from "../dao/models/products.model.js";
-import ProductDTO from "../dto/products.dto.js";
-
-export default class ProductRepository extends ProductRepositoryInterface {
-    async getSomeProducts(n, page, findCategory, price) {
-        let matchQuery = {};
-        findCategory ? (matchQuery.category = findCategory) : undefined;
-        price ? (matchQuery.price = { $gt: price }) : undefined;
-        matchQuery.status = true;
-
-        const options = {
-            page: page,
-            limit: n,
-            sort: { price: 1 }
-        };
-
-        return await ProductModel.paginate(matchQuery, options);
+export default class ProductRepository {
+    constructor(dao) {
+        this.dao = dao
     }
 
-    async addProduct(product) {
-        const newProduct = new ProductDTO(product);
-        return await ProductModel.create(newProduct);
-    }
-
-    async getProductById(productId) {
-        return await ProductModel.findOne({ _id: productId });
-    }
-
-    async deleteProduct(productId) {
-        return await ProductModel.deleteOne({ _id: productId });
-    }
-
-    async updateProduct(productId, key, value) {
-        const product = await this.getProductById(productId);
-        product[key] = value;
-        return product.save();
-    }
+    getAll = async () => await this.dao.getAll()
+    getAllLimit = async (limit) => await this.dao.getAllLimit(limit)
+    getById = async (id) => await this.dao.getById(id)
+    getAllQuery = async (data) => await this.dao.getAllQuery(data)
+    getByCategory = async (data) => await this.dao.getByCategory(data)
+    getByCategoryAll = async (data) => await this.dao.getByCategoryAll(data)
+    getOne = async (Object) => await this.dao.getOne(Object)
+    filter = async (filter) => await this.dao.filter(filter)
+    paginate = async (filter, options) => await this.dao.paginate(filter, options)
+    setCategory = async (Array) => await this.dao.setCategory(Array)
+    create = async (data) => await this.dao.create(data)
+    update = async (id, data) => await this.dao.update(id, data)
+    delete = async (id) => await this.dao.delete(id)
+    insertMany = async (data) => await this.dao.insertMany(data)
 }

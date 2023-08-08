@@ -1,7 +1,7 @@
 import { Router } from "express";
 import messagesService from '../dao/service/messages.service.js'
 import { io } from "../../utils.js";
-
+import { notForAdmin } from "../middleware/auth.middleware.js";
 const messagesRouteAtlas = Router();
 
 let usuario = {
@@ -10,7 +10,7 @@ let usuario = {
     message: []
 }
 
-messagesRouteAtlas.get('/', (req, res) => {
+messagesRouteAtlas.get('/', notForAdmin, (req, res) => {
     res.render('chat')
 })
 

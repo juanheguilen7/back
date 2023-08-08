@@ -23,8 +23,8 @@ export function isGuest(req, res, next) {
 export function isAdmin(req, res, next) {
 
     // Verificar si el usuario tiene permisos de administrador
-    console.log(req.session.user.rol, "auntenticador de admin")
-    if (req.session.user.rol !== 'Admin') {
+    console.log(req.session.user.role, "auntenticador de admin")
+    if (req.session.user.role !== 'Admin') {
 
         return res.redirect('/api/products'); // Redirigir a la página de productos si no es administrador
     }
@@ -46,4 +46,10 @@ export function authToken(req, res, next) {
     } else {
         return res.send({ err: 'No hay usuario autorizado' });
     }
+}
+export function notForAdmin (req,res, next){
+    if(req.session.user.role === 'Admin'){
+        return res.redirect('/api/products')
+    }
+    next()
 }

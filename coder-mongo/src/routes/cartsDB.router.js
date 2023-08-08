@@ -1,6 +1,6 @@
 import { Router } from "express";
 import cartService from '../dao/service/carts.service.js';
-
+import { notForAdmin } from "../middleware/auth.middleware.js";
 const cartRouterAtlas = Router();
 
 //CREO CARRITO(funciona)
@@ -47,7 +47,7 @@ cartRouterAtlas.get('/:cid', async (req, res) => {
 })
 
 //AGREGO PROD AL CARRITO (funciona)
-cartRouterAtlas.post('/:cid/product/:pid/:quantity', async (req, res) => {
+cartRouterAtlas.post('/:cid/product/:pid/:quantity', notForAdmin, async (req, res) => {
    try {
       const idCart = req.params.cid;
       const idProd = req.params.pid;
@@ -62,7 +62,7 @@ cartRouterAtlas.post('/:cid/product/:pid/:quantity', async (req, res) => {
 })
 
 //MODIFICO CANTIDAD DE PROD(funciona)
-cartRouterAtlas.put('/:cid/products/:pid', async (req, res) => {
+cartRouterAtlas.put('/:cid/products/:pid',notForAdmin, async (req, res) => {
    try {
       let idCart = req.params.cid;
       let idProd = req.params.pid;

@@ -1,22 +1,28 @@
-import UserRepositoryInterface from "./UserRepositoryInterface.js";
-import { UserModel } from "../dao/models/user.model.js";
-import UserDTO from "../dto/user.dto.js";
+import SessionService from "../dao/service/session.service";
 
-export default class UserRepository extends UserRepositoryInterface {
-    async getAllUsers() {
-        return await UserModel.find();
+class UserRepository {
+    constructor() {
+        this.dao = new SessionService();
+    }
+    async add(user) {
+        const newUser = await this.dao.create(user);
+        return newUser
     }
 
-    async getUserByEmail(email) {
-        return await UserModel.findOne({ email: email }).populate('cartID');
+    async get() {
+        const users = await this.dao.find();
+        return users
+    }
+    async getByEmail(email) {
+        const user = await this.dao.findByEmail(email);
+        return user
     }
 
-    async getUserById(id) {
-        return await UserModel.findOne({ _id: id }).populate('cartID');
-    }
-
-    async createUser(newUser) {
-        const newUserDTO = new UserDTO(newUser);
-        return await UserModel.create(newUserDTO);
+    async getById(id) {
+        const user = await this.dao.findById(id);
+        return user;
     }
 }
+const userRepository = new UserRepository()
+
+export default userRepository;

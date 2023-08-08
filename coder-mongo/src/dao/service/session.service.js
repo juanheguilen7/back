@@ -1,27 +1,22 @@
-import UserRepository from "../../repository/UserRepository.js";
+import { UserModel } from "../models/user.model.js"
+import UserDTO from "../../dto/user.dto.js";
 
-class SessionService {
-    constructor() {
-        this.repository = new UserRepository();
+
+export default class SessionService {
+    async find() {
+        return await UserModel.find();
     }
 
-    async getAllUsers() {
-        return await this.repository.getAllUsers();
+    async findByEmail(email) {
+        return await UserModel.findOne({ email: email }).populate('cartID');
     }
 
-    async getUserByEmail(email) {
-        return await this.repository.getUserByEmail(email);
+    async findById(id) {
+        return await UserModel.findOne({ _id: id }).populate('cartID');
     }
 
-    async getUserById(id) {
-        return await this.repository.getUserById(id);
-    }
-
-    async createUser(newUser) {
-        return await this.repository.createUser(newUser);
+    async create(newUser) {
+        const newUserDTO = new UserDTO(newUser);
+        return await UserModel.create(newUserDTO);
     }
 }
-
-const sessionService = new SessionService();
-
-export default sessionService;

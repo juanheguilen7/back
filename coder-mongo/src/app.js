@@ -73,7 +73,7 @@ app.use(passport.session());
 //conectando a Atlas
 const environment = async () => {
 
-    await mongoose.connect('mongodb+srv://juanheguilen:Cinqsauvages1234@cluster0.jljrb4e.mongodb.net/?retryWrites=true&w=majority');
+    await mongoose.connect(config.MONGO_URL);
 }
 environment();
 
